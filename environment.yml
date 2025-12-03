@@ -1,0 +1,13 @@
+name: aug-lexical-negation
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.11
+  - pytorch
+  - tqdm
+  - transformers
+  - datasets
+  - evaluate
+  - pip
