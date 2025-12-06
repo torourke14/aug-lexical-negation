@@ -1,0 +1,13 @@
+{
+  "_overall_acc": 0.8609425566343042,
+  "hyp_neg_locative": 0.04761904761904767,
+  "hyp_neg_object": 0.1470588235294118,
+  "hyp_neg_quantifier": 0.0,
+  "hyp_neg_root": 0.11688311688311692,
+  "hyp_neg_subject": 0.10526315789473684,
+  "prem_neg_locative": 0.19999999999999996,
+  "prem_neg_object": 0.38888888888888884,
+  "prem_neg_quantifier": 0.4,
+  "prem_neg_root": 0.47058823529411764,
+  "prem_neg_subject": 0.3157894736842105
+}

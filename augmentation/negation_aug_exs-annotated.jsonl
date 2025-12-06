@@ -1,0 +1,228 @@
+///////////////////////////////////////////////////////
+// Additional examples for premise negation
+///////////////////////////////////////////////////////
+
+// Premise Root
+
+{"premise": "The boy is not running in the park.", "hypothesis": "The boy is not running in the park.", "label": "entailment"}
+{"premise": "The boy is not running in the park.", "hypothesis": "The boy is standing in the park.", "label": "neutral"}
+{"premise": "The boy is not running in the park.", "hypothesis": "The boy is running in the park.", "label": "contradiction"}
+
+{"premise": "The woman is not cooking dinner tonight.", "hypothesis": "The woman will not cook dinner tonight.", "label": "entailment"}
+{"premise": "The woman is not cooking dinner tonight.", "hypothesis": "The woman is eating at a restaurant tonight.", "label": "neutral"}
+{"premise": "The woman is not cooking dinner tonight.", "hypothesis": "The woman is cooking dinner tonight.", "label": "contradiction"}
+
+{"premise": "The man is not working at the office today.", "hypothesis": "The man is not at the office for work today.", "label": "entailment"}
+{"premise": "The man is not working at the office today.", "hypothesis": "The man is visiting his family today.", "label": "neutral"}
+{"premise": "The man is not working at the office today.", "hypothesis": "The man is working at the office today.", "label": "contradiction"}
+
+{"premise": "The dog is not barking at the mailman.", "hypothesis": "The dog is not barking at the mailman.", "label": "entailment"}
+{"premise": "The dog is not barking at the mailman.", "hypothesis": "The dog is sleeping on the porch.", "label": "neutral"}
+{"premise": "The dog is not barking at the mailman.", "hypothesis": "The dog is barking at the mailman.", "label": "contradiction"}
+
+{"premise": "The teacher is not speaking to the class.", "hypothesis": "The teacher is not talking to the students.", "label": "entailment"}
+{"premise": "The teacher is not speaking to the class.", "hypothesis": "The teacher is writing on the board.", "label": "neutral"}
+{"premise": "The teacher is not speaking to the class.", "hypothesis": "The teacher is speaking to the class.", "label": "contradiction"}
+
+{"premise": "The chef is not preparing dessert.", "hypothesis": "The chef is not making dessert.", "label": "entailment"}
+{"premise": "The chef is not preparing dessert.", "hypothesis": "The chef is chopping vegetables.", "label": "neutral"}
+{"premise": "The chef is not preparing dessert.", "hypothesis": "The chef is preparing dessert.", "label": "contradiction"}
+
+{"premise": "The musician is not playing the piano.", "hypothesis": "The musician is not playing the piano right now.", "label": "entailment"}
+{"premise": "The musician is not playing the piano.", "hypothesis": "The musician is tuning the piano.", "label": "neutral"}
+{"premise": "The musician is not playing the piano.", "hypothesis": "The musician is playing the piano.", "label": "contradiction"}
+
+{"premise": "The crowd is not cheering loudly.", "hypothesis": "The crowd is not shouting in excitement.", "label": "entailment"}
+{"premise": "The crowd is not cheering loudly.", "hypothesis": "The crowd is waiting quietly.", "label": "neutral"}
+{"premise": "The crowd is not cheering loudly.", "hypothesis": "The crowd is cheering loudly.", "label": "contradiction"}
+
+{ "premise": "The girl is not crying anymore.", "hypothesis": "The girl has stopped crying.", "label": "entailment"}
+{ "premise": "The girl is not crying anymore.", "hypothesis": "The girl is talking to her friend.", "label": "neutral"}
+{ "premise": "The girl is not crying anymore.", "hypothesis": "The girl is crying right now.", "label": "contradiction"}
+
+{"premise": "The driver is not stopping at the light.", "hypothesis": "The driver does not stop at the light.", "label": "entailment"}
+{"premise": "The driver is not stopping at the light.", "hypothesis": "The driver is turning onto another street.", "label": "neutral"}
+{"premise": "The driver is not stopping at the light.", "hypothesis": "The driver is stopping at the light.", "label": "contradiction"}
+
+{"premise": "The singer is not performing tonight.", "hypothesis": "The singer will not perform tonight.", "label": "entailment"}
+{"premise": "The singer is not performing tonight.", "hypothesis": "The singer is traveling to another city tonight.", "label": "neutral"}
+{"premise": "The singer is not performing tonight.", "hypothesis": "The singer is performing tonight.", "label": "contradiction"}
+
+// Premise Object
+
+{"premise": "The child is eating no vegetables.", "hypothesis": "The child is not eating any vegetables.", "label": "entailment"}
+{"premise": "The child is eating no vegetables.", "hypothesis": "The child is eating pasta.", "label": "neutral"}
+{"premise": "The child is eating no vegetables.", "hypothesis": "The child is eating vegetables.", "label": "contradiction"}
+
+{"premise": "The woman drinks coffee with no sugar.", "hypothesis": "The woman’s coffee does not contain sugar.", "label": "entailment"}
+{"premise": "The woman drinks coffee with no sugar.", "hypothesis": "The woman drinks coffee in the morning.", "label": "neutral"}
+{"premise": "The woman drinks coffee with no sugar.", "hypothesis": "The woman puts sugar in her coffee.", "label": "contradiction"}
+
+{"premise": "The man is carrying no luggage.", "hypothesis": "The man does not have any luggage with him.", "label": "entailment"}
+{"premise": "The man is carrying no luggage.", "hypothesis": "The man is wearing a blue jacket.", "label": "neutral"}
+{"premise": "The man is carrying no luggage.", "hypothesis": "The man is carrying a large suitcase.", "label": "contradiction"}
+
+// Premise Location
+
+{"premise": "The boy is not in the house.", "hypothesis": "The boy is not inside the house.", "label": "entailment"}
+{"premise": "The boy is not in the house.", "hypothesis": "The boy is playing in the yard.", "label": "neutral"}
+{"premise": "The boy is not in the house.", "hypothesis": "The boy is in the house.", "label": "contradiction"}
+
+{"premise": "The dog is not on the couch.", "hypothesis": "The dog is not lying on the couch.", "label": "entailment"}
+{"premise": "The dog is not on the couch.", "hypothesis": "The dog is resting on the floor.", "label": "neutral"}
+{"premise": "The dog is not on the couch.", "hypothesis": "The dog is on the couch.", "label": "contradiction"}
+
+// Premise Quantifier
+
+{"premise": "No students are in the classroom.", "hypothesis": "There are no students in the classroom.", "label": "entailment"}
+{"premise": "No students are in the classroom.", "hypothesis": "The students are studying at home.", "label": "neutral"}
+{"premise": "No students are in the classroom.", "hypothesis": "Several students are in the classroom.", "label": "contradiction"}
+
+{"premise": "Nobody is swimming in the pool.", "hypothesis": "No one is swimming in the pool.", "label": "entailment"}
+{"premise": "Nobody is swimming in the pool.", "hypothesis": "People are sitting in chairs by the pool.", "label": "neutral"}
+{"premise": "Nobody is swimming in the pool.", "hypothesis": "Somebody is swimming in the pool.", "label": "contradiction"}
+
+{"premise": "None of the guests are eating dessert.", "hypothesis": "No guests are eating dessert.", "label": "entailment"}
+{"premise": "None of the guests are eating dessert.", "hypothesis": "The guests are drinking coffee.", "label": "neutral"}
+{"premise": "None of the guests are eating dessert.", "hypothesis": "At least one guest is eating dessert.", "label": "contradiction"}
+
+{"premise": "No cars are parked on the street.", "hypothesis": "There are no cars parked on the street.", "label": "entailment"}
+{"premise": "No cars are parked on the street.", "hypothesis": "Cars are parked in the nearby lot.", "label": "neutral"}
+{"premise": "No cars are parked on the street.", "hypothesis": "Several cars are parked on the street.", "label": "contradiction"}
+
+{"premise": "No dogs are barking in the yard.", "hypothesis": "There are no dogs barking in the yard.", "label": "entailment"}
+{"premise": "No dogs are barking in the yard.", "hypothesis": "A dog is sleeping on the porch.", "label": "neutral"}
+{"premise": "No dogs are barking in the yard.", "hypothesis": "Dogs are barking loudly in the yard.", "label": "contradiction"}
+
+{"premise": "No lights are on in the house.", "hypothesis": "The house has no lights turned on.", "label": "entailment"}
+{"premise": "No lights are on in the house.", "hypothesis": "The house is quiet and empty.", "label": "neutral"}
+{"premise": "No lights are on in the house.", "hypothesis": "Several lights are on in the house.", "label": "contradiction"}
+
+{"premise": "No musicians are playing on the stage.", "hypothesis": "There are no musicians performing on the stage.", "label": "entailment"}
+{"premise": "No musicians are playing on the stage.", "hypothesis": "The instruments are resting on the stage.", "label": "neutral"}
+{"premise": "No musicians are playing on the stage.", "hypothesis": "Musicians are playing on the stage.", "label": "contradiction"}
+
+{"premise": "No children are riding the carousel.", "hypothesis": "No children are on the carousel.", "label": "entailment"}
+{"premise": "No children are riding the carousel.", "hypothesis": "Children are standing in line nearby.", "label": "neutral"}
+{"premise": "No children are riding the carousel.", "hypothesis": "Several children are riding the carousel.", "label": "contradiction"}
+
+{"premise": "None of the boxes are open.", "hypothesis": "All of the boxes are closed.", "label": "entailment"}
+{"premise": "None of the boxes are open.", "hypothesis": "The boxes are stacked in the corner.", "label": "neutral"}
+{"premise": "None of the boxes are open.", "hypothesis": "One of the boxes is open.", "label": "contradiction"}
+
+{"premise": "Nobody is waiting in the line.", "hypothesis": "There is no one standing in the line.", "label": "entailment"}
+{"premise": "Nobody is waiting in the line.", "hypothesis": "People are sitting at nearby tables.", "label": "neutral"}
+{"premise": "Nobody is waiting in the line.", "hypothesis": "Several people are waiting in the line.", "label": "contradiction"}
+
+{"premise": "None of the lights are working.", "hypothesis": "No lights are working.", "label": "entailment"}
+{"premise": "None of the lights are working.", "hypothesis": "The lights are hanging from the ceiling.", "label": "neutral"}
+{"premise": "None of the lights are working.", "hypothesis": "Several lights are working.", "label": "contradiction"}
+
+{"premise": "No birds are in the tree.", "hypothesis": "There are no birds in the tree.", "label": "entailment"}
+{"premise": "No birds are in the tree.", "hypothesis": "A cat is sleeping under the tree.", "label": "neutral"}
+{"premise": "No birds are in the tree.", "hypothesis": "Many birds are sitting in the tree.", "label": "contradiction"}
+
+// Premise Subject
+
+{"premise": "Nobody is playing the piano.", "hypothesis": "No one is playing the piano.", "label": "entailment"}
+{"premise": "Nobody is playing the piano.", "hypothesis": "Someone is tuning the piano.", "label": "neutral"}
+{"premise": "Nobody is playing the piano.", "hypothesis": "Somebody is playing the piano.", "label": "contradiction"}
+
+{"premise": "Nobody is sitting in the front row.", "hypothesis": "No one is sitting in the front row.", "label": "entailment"}
+{"premise": "Nobody is sitting in the front row.", "hypothesis": "People are standing in the aisle.", "label": "neutral"}
+{"premise": "Nobody is sitting in the front row.", "hypothesis": "Several people are sitting in the front row.", "label": "contradiction"}
+
+{"premise": "Nothing is moving on the quiet street.", "hypothesis": "No objects are moving on the street.", "label": "entailment"}
+{"premise": "Nothing is moving on the quiet street.", "hypothesis": "The houses along the street are old.", "label": "neutral"}
+{"premise": "Nothing is moving on the quiet street.", "hypothesis": "A car is moving down the street.", "label": "contradiction"}
+
+{"premise": "Nobody is waiting at the bus stop.", "hypothesis": "No one is waiting at the bus stop.", "label": "entailment"}
+{"premise": "Nobody is waiting at the bus stop.", "hypothesis": "A bus is scheduled to arrive soon.", "label": "neutral"}
+{"premise": "Nobody is waiting at the bus stop.", "hypothesis": "A crowd of people is waiting at the bus stop.", "label": "contradiction"}
+
+{"premise": "No one is working in the office today.", "hypothesis": "The office has no employees working today.", "label": "entailment"}
+{"premise": "No one is working in the office today.", "hypothesis": "The office lights are turned off.", "label": "neutral"}
+{"premise": "No one is working in the office today.", "hypothesis": "Several employees are working in the office today.", "label": "contradiction"}
+
+{"premise": "Nothing is happening on the quiet street.", "hypothesis": "There is no activity on the street.", "label": "entailment"}
+{"premise": "Nothing is happening on the quiet street.", "hypothesis": "The houses on the street are painted white.", "label": "neutral"}
+{"premise": "Nothing is happening on the quiet street.", "hypothesis": "A parade is taking place on the street.", "label": "contradiction"}
+
+{"premise": "None of the actors are rehearsing right now.", "hypothesis": "No actors are rehearsing at the moment.", "label": "entailment"}
+{"premise": "None of the actors are rehearsing right now.", "hypothesis": "The costumes are laid out backstage.", "label": "neutral"}
+{"premise": "None of the actors are rehearsing right now.", "hypothesis": "Several actors are rehearsing right now.", "label": "contradiction"}
+{"premise": "No animals are wandering in the yard.", "hypothesis": "There are no animals in the yard.", "label": "entailment"}
+{"premise": "No animals are wandering in the yard.", "hypothesis": "A gardener is trimming the plants.", "label": "neutral"}
+{"premise": "No animals are wandering in the yard.", "hypothesis": "Dogs are wandering in the yard.", "label": "contradiction"}
+
+{"premise": "No customers are browsing the aisles.", "hypothesis": "There are no customers browsing right now.", "label": "entailment"}
+{"premise": "No customers are browsing the aisles.", "hypothesis": "The employees are restocking shelves.", "label": "neutral"}
+{"premise": "No customers are browsing the aisles.", "hypothesis": "Several customers are browsing the aisles.", "label": "contradiction"}
+
+///////////////////////////////////////////////////////
+// Additional examples for hypothesis negation
+///////////////////////////////////////////////////////
+
+// Hypothesis Attribute
+
+{"premise": "The soup on the table is hot.", "hypothesis": "The soup is not cold.", "label": "entailment"}
+{"premise": "The soup on the table is hot.", "hypothesis": "The soup is not hot.", "label": "contradiction"}
+
+{"premise": "The shirt on display is bright red.", "hypothesis": "The shirt is not blue.", "label": "entailment"}
+{"premise": "The shirt on display is bright red.", "hypothesis": "The shirt is not red.", "label": "contradiction"}
+
+{"premise": "The car in the driveway is very old.", "hypothesis": "The car is not new.", "label": "entailment"}
+{"premise": "The car in the driveway is very old.", "hypothesis": "The car is not old.", "label": "contradiction"}
+
+{"premise": "The room is completely dark.", "hypothesis": "The room is not bright.", "label": "entailment"}
+{"premise": "The room is completely dark.", "hypothesis": "The room is not dark.", "label": "contradiction"}
+
+{"premise": "The weather today is warm and sunny.", "hypothesis": "The weather is not cold.", "label": "entailment"}
+{"premise": "The weather today is warm and sunny.", "hypothesis": "The weather is not warm.", "label": "contradiction"}
+
+{"premise": "The exam was very difficult.", "hypothesis": "The exam was not easy.", "label": "entailment"}
+{"premise": "The exam was very difficult.", "hypothesis": "The exam was not difficult.", "label": "contradiction"}
+
+{"premise": "The shirt she bought is very cheap.", "hypothesis": "The shirt is not expensive.", "label": "entailment"}
+{"premise": "The shirt she bought is very cheap.", "hypothesis": "The shirt is not cheap.", "label": "contradiction"}
+
+{"premise": "The dog in the yard is very noisy.", "hypothesis": "The dog is not quiet.", "label": "entailment"}
+{"premise": "The dog in the yard is very noisy.", "hypothesis": "The dog is not noisy.", "label": "contradiction"}
+
+{"premise": "The cake on the table is extremely sweet.", "hypothesis": "The cake is not sour.", "label": "entailment"}
+{"premise": "The cake on the table is extremely sweet.", "hypothesis": "The cake is not sweet.", "label": "contradiction"}
+
+{"premise": "The lake water is clear.", "hypothesis": "The water is not dirty.", "label": "entailment"}
+{"premise": "The lake water is clear.", "hypothesis": "The water is not clear.", "label": "contradiction"}
+
+// Hypothesis Quantifier
+
+{"premise": "Many students are in the library.", "hypothesis": "No students are in the classroom.", "label": "neutral"}
+{"premise": "Many students are in the library.", "hypothesis": "No students are in the library.", "label": "contradiction"}
+
+{"premise": "The classroom is completely empty.", "hypothesis": "No students are in the classroom.", "label": "entailment"}
+{"premise": "The classroom is completely empty.", "hypothesis": "Nobody is in the classroom.", "label": "entailment"}
+
+{"premise": "A crowd of people is waiting in line.", "hypothesis": "Nobody is waiting in line.", "label": "contradiction"}
+{"premise": "A crowd of people is waiting in line.", "hypothesis": "No children are in the line.", "label": "neutral"}
+
+{"premise": "Several cars are parked on the street.", "hypothesis": "No cars are parked on the street.", "label": "contradiction"}
+{"premise": "Several cars are parked on the street.", "hypothesis": "No bicycles are parked on the street.", "label": "neutral"}
+
+{"premise": "The park is empty this morning.", "hypothesis": "Nobody is in the park.", "label": "entailment"}
+{"premise": "The park is empty this morning.", "hypothesis": "No dogs are playing in the park.", "label": "entailment"}
+
+{"premise": "A group of musicians is playing on the stage.", "hypothesis": "No musicians are playing on the stage.", "label": "contradiction"}
+{"premise": "A group of musicians is playing on the stage.", "hypothesis": "Nobody is sitting in the audience.", "label": "neutral"}
+
+{"premise": "A few guests are eating dessert.", "hypothesis": "None of the guests are eating dessert.", "label": "contradiction"}
+{"premise": "A few guests are eating dessert.", "hypothesis": "Nobody is eating dinner.", "label": "neutral"}
+
+{"premise": "Every seat in the theater is full.", "hypothesis": "Nobody is sitting in the theater.", "label": "contradiction"}
+{"premise": "Every seat in the theater is full.", "hypothesis": "No seats are empty.", "label": "entailment"}
+
+{"premise": "Some children are riding the carousel.", "hypothesis": "No children are riding the carousel.", "label": "contradiction"}
+{"premise": "Some children are riding the carousel.", "hypothesis": "Nobody is standing in line for the carousel.", "label": "neutral"}
+
+{"premise": "There is exactly one open box on the floor.", "hypothesis": "None of the boxes are open.", "label": "contradiction"}
+{"premise": "There is exactly one open box on the floor.", "hypothesis": "No boxes are on the table.", "label": "neutral"}

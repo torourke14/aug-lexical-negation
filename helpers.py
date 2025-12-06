@@ -6,11 +6,14 @@ from transformers.trainer_utils import PredictionOutput
 from typing import Tuple
 from tqdm.auto import tqdm
 
+import torch
+import torch.nn as nn
+
 QA_MAX_ANSWER_LENGTH = 30
 
 
 # This function preprocesses an NLI dataset, tokenizing premises and hypotheses.
-def prepare_dataset_nli(examples, tokenizer, max_seq_length=None):
+def prepare_dataset_nli(examples, tokenizer, max_seq_length=None, apply_reweighting=False):
     max_seq_length = tokenizer.model_max_length if max_seq_length is None else max_seq_length
 
     tokenized_examples = tokenizer(
@@ -22,6 +25,10 @@ def prepare_dataset_nli(examples, tokenizer, max_seq_length=None):
     )
 
     tokenized_examples['label'] = examples['label']
+
+    if "sample_weight" in examples and apply_reweighting:
+        tokenized_examples["sample_weight"] = examples["sample_weight"]
+
     return tokenized_examples
 
 
@@ -312,3 +319,38 @@ class QuestionAnsweringTrainer(Trainer):
         self.control = self.callback_handler.on_evaluate(self.args, self.state,
                                                          self.control, metrics)
         return metrics
+    
+
+
+class WeightedQATrainer(Trainer):
+    """ 
+    use per-ex 'sample_weight' to scale the NLI cross-entropy loss. 
+    """
+    def compute_loss(self, 
+                     model, 
+                     inputs, 
+                     return_outputs=False):
+        labels = inputs.pop("labels") 
+        sample_weight = inputs.pop("sample_weight", None)
+
+        outputs = model(**inputs)
+        logits = outputs.logits
+
+        # Per-exacross-entropy (no reduction)
+        num_labels = self.model.config.num_labels
+        loss_fct = nn.CrossEntropyLoss(reduction="none")
+        loss = loss_fct(
+            logits.view(-1, num_labels),
+            labels.view(-1)
+        )
+
+        # Apply sample weights. sample_weight comes as [batch_size] or [batch_size, 1]
+        if sample_weight is not None:
+            if sample_weight.dim() > 1:
+                sample_weight = sample_weight.view(-1)
+            sample_weight = sample_weight.to(loss.device)
+            loss = loss * sample_weight
+
+        loss = loss.mean()
+
+        return (loss, outputs) if return_outputs else loss

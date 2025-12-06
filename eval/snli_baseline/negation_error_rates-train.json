@@ -1,0 +1,15 @@
+{
+  "hyp_neg_attribute": 0.14953271028037385,
+  "hyp_neg_locative": 0.11517857142857146,
+  "hyp_neg_modal": 0.18181818181818177,
+  "hyp_neg_object": 0.1333333333333333,
+  "hyp_neg_quantifier": 0.0505050505050505,
+  "hyp_neg_root": 0.18701825557809326,
+  "hyp_neg_subject": 0.017753389283408638,
+  "prem_neg_attribute": 0.19753086419753085,
+  "prem_neg_locative": 0.1594202898550725,
+  "prem_neg_object": 0.2148962148962149,
+  "prem_neg_quantifier": 0.42592592592592593,
+  "prem_neg_root": 0.2569444444444444,
+  "prem_neg_subject": 0.20833333333333337
+}

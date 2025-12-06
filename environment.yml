@@ -1,13 +1,22 @@
 name: aug-lexical-negation
 channels:
-  - defaults
-  - conda-forge
   - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
 dependencies:
   - python=3.11
-  - pytorch
+  - pip
   - tqdm
-  - transformers
   - datasets
   - evaluate
-  - pip
+  - transformers
+  - accelerate
+  - spacy
+  - pip:
+    - --extra-index-url https://download.pytorch.org/whl/cu121
+    - torch>=2.6
+    - torchvision
+    - torchaudio
+
+  
