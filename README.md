@@ -78,33 +78,6 @@
   --dataset ./models/snli_neg_aug_weighted/eval_with_challenges.jsonl \
   --split validation`
 
-#### P5.Accompanying Paper
-
-With all of that done, the paper structure is straightforward:
-**Abstract**
-- Problem: artifacts in SNLI.
-- Method: analyze lexical artifacts, oversample hard slices + contrast examples.
-- Result: what changed (e.g., improved robustness to negation with small change in overall accuracy).
-
-**Introduction**
-- Motivation: dataset artifacts, spurious correlations.
-
-**Method**
-- Baseline model + training setup (ELECTRA-small with starter code).
-- Analysis method (lexical stats, slice definitions, contrast set construction).
-- Augmentation method / fix (how you modified the training distribution).
-
-**Experiments and Results**
-- Baseline metrics.
--Analysis plots/tables for artifacts and slices.
-- Fixed-model metrics, same plots/tables.
-- Contrast set results before/after.
-
-**Discussion**
-- Where the fix helped, where it didn’t.
-- Limitations and future ideas.
-- Related Work + Conclusion
-
 ## Getting Started
 You'll need Python >= 3.6 to run the code in this repo.
 
