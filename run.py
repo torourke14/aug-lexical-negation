@@ -1,17 +1,33 @@
-import datasets
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, \
-    AutoModelForQuestionAnswering, Trainer, TrainingArguments, HfArgumentParser
-import evaluate
-from helpers import prepare_dataset_nli, prepare_train_dataset_qa, \
-    prepare_validation_dataset_qa, QuestionAnsweringTrainer, compute_accuracy
 import os
 import json
+import torch
+
+import datasets
+import evaluate
+# from transformers import (
+#     AutoTokenizer, AutoModelForSequenceClassification,
+#     AutoModelForQuestionAnswering, Trainer, TrainingArguments, HfArgumentParser
+# )
+from transformers.models.auto.tokenization_auto import AutoTokenizer
+from transformers.models.auto.modeling_auto import AutoModelForSequenceClassification, AutoModelForQuestionAnswering
+from transformers.trainer import Trainer
+from transformers.training_args import TrainingArguments
+from transformers.hf_argparser import HfArgumentParser
+
+from augmentation.aug_weighting import (
+    get_fn_add_neg_weight, load_slice_error
+)
+from helpers import (
+    prepare_dataset_nli, prepare_train_dataset_qa,
+    prepare_validation_dataset_qa, compute_accuracy,
+    QuestionAnsweringTrainer, WeightedQATrainer
+)
 
 NUM_PREPROCESSING_WORKERS = 2
 
 
 def main():
-    argp = HfArgumentParser(TrainingArguments)
+    argp = HfArgumentParser(TrainingArguments) # type: ignore
     # The HfArgumentParser object collects command-line arguments into an object (and provides default values for unspecified arguments).
     # In particular, TrainingArguments has several keys that you'll need/want to specify (when you call run.py from the command line):
     # --do_train
@@ -47,6 +63,35 @@ def main():
                       help='Limit the number of examples to train on.')
     argp.add_argument('--max_eval_samples', type=int, default=None,
                       help='Limit the number of examples to evaluate on.')
+    
+    ## BELOW COMMANDS: dataset augmentation for adding negation examples and reweighting based on results
+    argp.add_argument(
+        '--negation_aug_file',
+        type=str,
+        default=None,
+        help="""Path to json/jsonl file containing handcrafted negation examples
+        --> If set and task='nli', these examples (with keys 'premise', 'hypothesis', 'label') are split into
+        train-only and eval-only subsets and injected into the respective datasets at build time """
+    )
+    argp.add_argument(
+        '--negation_train_fraction',
+        type=float,
+        default=0.5,
+        help="""Fraction in (0, 1) of the negation augmentation examples to use for training (Remaining 
+            reserved for evaluation/challenge)"""
+    )
+    argp.add_argument(
+        '--use_neg_reweighting',
+        action='store_true',
+        help='Use negative example reweighting during training.'
+    )
+    argp.add_argument(
+        '--neg_slice_error_path', 
+        type=str, 
+        default=None,
+        help='Path to JSON file containing slice error rates for negation-based reweighting.'
+    )
+    
 
     training_args, args = argp.parse_args_into_dataclasses()
 
@@ -72,6 +117,63 @@ def main():
         # Load the raw data
         dataset = datasets.load_dataset(*dataset_id)
     
+    ### OPTIONAL per args.negation_aug_file: create 2nd dataset for negation augmentation if args are specified
+    neg_train_dataset = None
+    neg_eval_dataset = None
+    if args.task == 'nli' and args.negation_aug_file is not None:
+        # Load the negation augmentation file as a small dataset
+        neg_features = datasets.Features({
+            "premise": datasets.Value("string"),
+            "hypothesis": datasets.Value("string"),
+            "label": datasets.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+        })
+        neg_ds = datasets.load_dataset(
+            'json',
+            data_files=args.negation_aug_file,
+            features=neg_features,
+        )['train']
+
+        frac = args.negation_train_fraction
+        if not (0.0 < frac < 1.0):
+            raise ValueError(f"--negation_train_fraction must be > 0.0 and < 1.0, got {frac}")
+
+        # Deterministic shuffle using the HF TrainingArguments seed
+        # then split into train/test according to specified fraction
+        neg_ds = neg_ds.shuffle(seed=training_args.seed)
+        n_total = len(neg_ds)
+        n_train = int(n_total * frac)
+        n_train = max(0, min(n_train, n_total))
+
+        neg_train_dataset = neg_ds.select(range(n_train))
+        neg_eval_dataset = neg_ds.select(range(n_train, n_total))
+
+        print(
+            f"Loaded {n_total} negation augmentation examples from "
+            f"{args.negation_aug_file}: "
+            f"{len(neg_train_dataset)} for training, "
+            f"{len(neg_eval_dataset)} for eval/challenge."
+        )
+
+    ### OPTIONAL per args.use_neg_reweighting: apply negation-based reweighting to training data
+    if dataset is not None and args.use_neg_reweighting:
+        slice_error = load_slice_error(args.neg_slice_error_path)
+        overall_acc = slice_error.get('_overall_acc', None)
+        add_weight_fn = get_fn_add_neg_weight(
+            slice_error,
+            base=1.0,
+            max_weight=5.0,
+            overall_acc=overall_acc
+        )
+        dataset["train"] = dataset["train"].map(
+            add_weight_fn,
+            num_proc=NUM_PREPROCESSING_WORKERS,
+            desc="Adding sample weights based on NPAS slices",
+        )
+
+        print("Added sample weights to training dataset based on negation slice errors.")
+
+
+
     # NLI models need to have the output label count specified (label 0 is "entailed", 1 is "neutral", and 2 is "contradiction")
     task_kwargs = {'num_labels': 3} if args.task == 'nli' else {}
 
@@ -94,34 +196,65 @@ def main():
         prepare_eval_dataset = lambda exs: prepare_validation_dataset_qa(exs, tokenizer)
     elif args.task == 'nli':
         prepare_train_dataset = prepare_eval_dataset = \
-            lambda exs: prepare_dataset_nli(exs, tokenizer, args.max_length)
+            lambda exs: prepare_dataset_nli(exs, tokenizer, args.max_length, args.use_neg_reweighting)
         # prepare_eval_dataset = prepare_dataset_nli
     else:
         raise ValueError('Unrecognized task name: {}'.format(args.task))
 
     print("Preprocessing data... (this takes a little bit, should only happen once per dataset)")
     if dataset_id == ('snli',):
-        # remove SNLI examples with no label
         dataset = dataset.filter(lambda ex: ex['label'] != -1)
     
+    # Featurize datasets
     train_dataset = None
     eval_dataset = None
     train_dataset_featurized = None
     eval_dataset_featurized = None
     if training_args.do_train:
         train_dataset = dataset['train']
+
+        # OPTIONAL per args.max_train_samples: Clip examples
+        # DOING BEFORE negation augmentation injection so that we are sure
+        # our updates are in final dataset
         if args.max_train_samples:
             train_dataset = train_dataset.select(range(args.max_train_samples))
+
+        ### OPTIONAL per args.negation_aug_file: Inject negation augmentation into TRAIN 
+        if args.negation_aug_file:
+            train_dataset = datasets.concatenate_datasets([train_dataset, neg_train_dataset])
+            print(f"Train dataset after adding negation challenges: {len(train_dataset)} examples")
+
         train_dataset_featurized = train_dataset.map(
             prepare_train_dataset,
             batched=True,
             num_proc=NUM_PREPROCESSING_WORKERS,
             remove_columns=train_dataset.column_names
         )
+
     if training_args.do_eval:
         eval_dataset = dataset[eval_split]
+
+        # OPTIONAL per args.max_eval_samples: Clip examples
         if args.max_eval_samples:
             eval_dataset = eval_dataset.select(range(args.max_eval_samples))
+
+        # OPTIONAL per args.negation_aug_file: Inject negation augmentation into EVAL
+        if neg_eval_dataset is not None:
+            eval_dataset = datasets.concatenate_datasets([eval_dataset, neg_eval_dataset])
+            print(f"Eval dataset after adding negation challenges: {len(eval_dataset)} examples")
+
+        # OPTIONAL per args.output_test_file, 
+        if training_args.output_dir is not None:
+            export_path = os.path.join(training_args.output_dir, "eval_with_challenges.jsonl")
+            with open(export_path, "w", encoding="utf-8") as f:
+                for ex in eval_dataset:
+                    f.write(json.dumps({
+                        "premise": ex["premise"], 
+                        "hypothesis": ex["hypothesis"], 
+                        "label": int(ex["label"]),
+                    }, ensure_ascii=False) + "\n")
+            print(f"Exported merged eval dataset to {export_path}")
+        
         eval_dataset_featurized = eval_dataset.map(
             prepare_eval_dataset,
             batched=True,
@@ -145,6 +278,9 @@ def main():
             predictions=eval_preds.predictions, references=eval_preds.label_ids)
     elif args.task == 'nli':
         compute_metrics = compute_accuracy
+
+        if args.use_neg_reweighting:
+            trainer_class = WeightedQATrainer
     
 
     # This function wraps the compute_metrics function, storing the model's predictions
@@ -168,6 +304,7 @@ def main():
     if training_args.do_train:
         trainer.train()
         trainer.save_model()
+
         # If you want to customize the way the loss is computed, you should subclass Trainer and override the "compute_loss"
         # method (see https://huggingface.co/transformers/_modules/transformers/trainer.html#Trainer.compute_loss).
         #
@@ -211,4 +348,6 @@ def main():
 
 
 if __name__ == "__main__":
+    print(f"Using GPU: {torch.cuda.is_available()}")
+    print(f"Using GPU device name: {torch.cuda.get_device_name(0)}")
     main()
