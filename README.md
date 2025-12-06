@@ -1,26 +1,118 @@
-# fp-dataset-artifacts
+## Lexical Overlap and Negation Study
 
-Project by Kaj Bostrom, Jifan Chen, and Greg Durrett. Code by Kaj Bostrom and Jifan Chen.
+#### P1. Run Baseline
+**Train CMD:** 
+- `python run.py \
+  --model google/electra-small-discriminator \
+  --output_dir ./models/snli_baseline \
+  --do_train \
+  --do_eval \
+  --dataset snli --task nli \
+  --max_train_samples 100000 \
+  --per_device_train_batch_size 38 \
+  --num_train_epochs 6`
+
+#### P2. Analysis
+**CMD:** 
+- `python run_inference.py \
+  --model_dir ./models/snli_baseline \
+  --split validation \
+  --output_csv ./eval/snli_baseline_slices.csv \
+  --slice_error_json_out ./eval/snli_baseline`
+
+- Run inference on evaluation set
+- Print metrics for (short running list):
+  - accuracy on hypothesis vs. negation
+  - accuracy vs. jaccard score (overlap)
+  - accuracy by negation in premise and/or hypothesis
+  - label vs. predictions based on negation pattern
+      - Negation Reliance Index?
+  - Examples for specific use cases
+
+
+#### P3. Retrain with Challenge Sets
+**add targeted chanllenge set**
+- `augmentation/negation_aug_exs.jsonl`
+
+**Train**
+- `python run.py \
+  --model google/electra-small-discriminator \
+  --output_dir ./models/snli_neg_aug \
+  --do_train \
+  --do_eval \
+  --dataset snli --task nli \
+  --max_train_samples 99850 \
+  --per_device_train_batch_size 38 \
+  --negation_aug_file augmentation/negation_aug_exs.jsonl \
+  --negation_train_fraction 0.5`
+
+**re-run error analysis on validation, get negation slice error rates**
+- `python run_inference.py \
+  --model_dir ./models/snli_neg_aug \
+  --dataset ./models/snli_neg_aug/eval_with_challenges.jsonl \
+  --split validation \
+  --slice_error_json_out ./eval/snli_neg_aug/neg_error_rates_val.json`
+  
+**re-run inference on validation for base SNLI, for comparison**
+- `python run_inference.py \
+  --model_dir ./models/snli_neg_aug \
+  --split validation \`
+
+#### P4. Re-train with challenge sets and class weights, re-analyze
+**Train**
+- `python run.py \
+  --model google/electra-small-discriminator \
+  --output_dir ./models/snli_neg_aug_weighted \
+  --do_train \
+  --do_eval \
+  --dataset snli --task nli \
+  --max_train_samples 99850 \
+  --per_device_train_batch_size 38 \
+  --negation_aug_file augmentation/negation_aug_exs.jsonl \
+  --negation_train_fraction 0.7 \
+  --use_neg_reweighting \
+  --neg_slice_error_path eval/snli_neg_aug/neg_error_rates_val.json`
+
+- `python run_inference.py \
+  --model_dir ./models/snli_neg_aug_weighted \
+  --dataset ./models/snli_neg_aug_weighted/eval_with_challenges.jsonl \
+  --split validation`
+
+#### P5.Accompanying Paper
+
+With all of that done, the paper structure is straightforward:
+**Abstract**
+- Problem: artifacts in SNLI.
+- Method: analyze lexical artifacts, oversample hard slices + contrast examples.
+- Result: what changed (e.g., improved robustness to negation with small change in overall accuracy).
+
+**Introduction**
+- Motivation: dataset artifacts, spurious correlations.
+
+**Method**
+- Baseline model + training setup (ELECTRA-small with starter code).
+- Analysis method (lexical stats, slice definitions, contrast set construction).
+- Augmentation method / fix (how you modified the training distribution).
+
+**Experiments and Results**
+- Baseline metrics.
+-Analysis plots/tables for artifacts and slices.
+- Fixed-model metrics, same plots/tables.
+- Contrast set results before/after.
+
+**Discussion**
+- Where the fix helped, where it didn’t.
+- Limitations and future ideas.
+- Related Work + Conclusion
 
 ## Getting Started
 You'll need Python >= 3.6 to run the code in this repo.
 
 First, clone the repository:
-
-`git clone git@github.com:gregdurrett/fp-dataset-artifacts.git`
+`git clone git@github.com:torourke14/aug-lexical-negation.git`
 
 Then install the dependencies:
-
-`pip install --upgrade pip`
-
-`pip install -r requirements.txt`
-
-If you're running on a shared machine and don't have the privileges to install Python packages globally,
-or if you just don't want to install these packages permanently, take a look at the "Virtual environments"
-section further down in the README.
-
-To make sure pip is installing packages for the right Python version, run `pip --version`
-and check that the path it reports is for the right Python interpreter.
+`conda create -f environment .yml`
 
 ## Training and evaluating a model
 To train an ELECTRA-small model on the SNLI natural language inference dataset, you can run the following command:

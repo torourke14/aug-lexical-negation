@@ -167,7 +167,7 @@ def main():
         dataset["train"] = dataset["train"].map(
             add_weight_fn,
             num_proc=NUM_PREPROCESSING_WORKERS,
-            desc="Adding sample weights based on NPAS slices",
+            desc="Adding sample weights..",
         )
 
         print("Added sample weights to training dataset based on negation slice errors.")
